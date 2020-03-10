@@ -33,10 +33,11 @@
       </div>
       <div class="row">
         <div class="col-md-6">
-          <div class="card mt-5">
+          <div class="card my-5">
             <div class="card-body">
               <h5 class="card-title">Tambah Buku</h5>
               <table class="table">
+                  <input class="form-control" type="hidden" name="id" />
                 <tr>
                   <td>Judul Buku</td>
                   <td><input class="form-control" type="text" name="judulBuku" /></td>
@@ -50,12 +51,9 @@
                   <td><input class="form-control" type="text" name="tahunTerbit" /></td>
                 </tr>
                 <tr>
-                  <td>
-                    <button onclick="tambahData()" class="btn btn-primary">
-                      Save
-                    </button>
-                  </td>
-                  <td></td>
+                <td></td>
+                  <td><button id="btnAdd" onclick="tambahData()" class="btn btn-primary">Save</button>
+                  <button id="btnUpdate" onclick="updateData()" class="btn btn-primary">Update</button></td>
                 </tr>
               </table>
               <p id="pesan"></p>
@@ -84,6 +82,25 @@
 
     <script>
       onload();
+
+      function updateData(){
+        let id = $("[name='id']").val();
+        let judulBuku = $("[name='judulBuku']").val();
+        let pengarang = $("[name='pengarang']").val();
+        let tahunTerbit = $("[name='tahunTerbit']").val();
+
+        $.ajax({
+          type: "POST",
+          data: "id=" + id + "&judulBuku=" + judulBuku + "&pengarang=" + pengarang + "&tahunTerbit=" + tahunTerbit,
+          url: "updateData.php",
+          success: function(result) {
+            let objResult = JSON.parse(result);
+            $("#pesan").html(objResult.pesan);
+            onload();
+          }
+        });
+      }
+
       function tambahData() {
         let judulBuku = $("[name='judulBuku']").val();
         let pengarang = $("[name='pengarang']").val();
@@ -101,6 +118,25 @@
         });
       }
 
+      function pilihData(id_buku){
+        let id = id_buku;
+        $.ajax({
+          type : "POST",
+          data : "id="+id,
+          url : "ambilData.php",
+          success : function(result){
+            let objResult = JSON.parse(result);
+            $("[name='id']").val(objResult.id);
+            $("[name='judulBuku']").val(objResult.judul_buku);
+            $("[name='pengarang']").val(objResult.pengarang);
+            $("[name='tahunTerbit']").val(objResult.tahun_terbit);
+            $("#btnAdd").hide();
+            $("#btnUpdate").show();
+          }
+        })
+        
+      }
+
       function onload(){
         let dataHandler = $("#barisData");
         dataHandler.html("");
@@ -112,9 +148,9 @@
             let obj = JSON.parse(result);
             $.each(obj, function(key, val) {
               let newRow = $("<tr>");
-              newRow.html( "<td>" + val.id + "<td>" + val.judul_buku + "<td>" + val.pengarang + "<td>" + val.tahun_terbit + "<td>button" );
-
+              newRow.html( "<td>" + val.id + "<td>" + val.judul_buku + "<td>" + val.pengarang + "<td>" + val.tahun_terbit + "<td><button onclick='pilihData("+ val.id +")' class='btn btn-primary'>Select</button>" );
               dataHandler.append(newRow);
+            $("#btnUpdate").hide();
             });
           }
         });
