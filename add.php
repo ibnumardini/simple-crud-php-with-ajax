@@ -8,7 +8,7 @@ $tahunTerbit = $_POST["tahunTerbit"];
 $result['pesan'] = "";
 
 if (empty($judulBuku) && $judulBuku == "") {
-    $result['pesan'] = "Judul Buk Wajib di isi!.";
+    $result['pesan'] = "Judul Buku Wajib di isi!.";
 } elseif (empty($pengarang) && $pengarang == "") {
     $result['pesan'] = "Pengarang wajib di isi.";
 } elseif (empty($tahunTerbit) && $tahunTerbit == "") {
