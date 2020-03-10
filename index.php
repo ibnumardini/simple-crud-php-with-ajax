@@ -134,7 +134,24 @@
             $("#btnUpdate").show();
           }
         })
-        
+
+      }
+
+      function hapusData(idx){
+
+        let id = idx;
+
+        let message = confirm("Yakin?");
+        if(message){
+          $.ajax({
+              type : "POST",
+              data : "id="+id,
+              url : "deleteData.php",
+              success : function(result){
+                onload();
+              }
+          })
+        }
       }
 
       function onload(){
@@ -148,7 +165,7 @@
             let obj = JSON.parse(result);
             $.each(obj, function(key, val) {
               let newRow = $("<tr>");
-              newRow.html( "<td>" + val.id + "<td>" + val.judul_buku + "<td>" + val.pengarang + "<td>" + val.tahun_terbit + "<td><button onclick='pilihData("+ val.id +")' class='btn btn-primary'>Select</button>" );
+              newRow.html( "<td>" + (key+1) + "<td>" + val.judul_buku + "<td>" + val.pengarang + "<td>" + val.tahun_terbit + "<td><button onclick='pilihData("+ val.id +")' class='btn btn-primary'>Select</button><button onclick='hapusData("+ val.id +")' class='btn btn-danger ml-2'>Delete</button>" );
               dataHandler.append(newRow);
             $("#btnUpdate").hide();
             });
